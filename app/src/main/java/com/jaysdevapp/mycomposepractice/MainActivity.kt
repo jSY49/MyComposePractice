@@ -87,6 +87,7 @@ fun MyFirstScreen(){
                 modifier = Modifier.size(24.dp) // 이미지 크기 조절
             )
             Text(text = "다음화면으로")
+            Text(text = "다음화면으로")
         }
 
         // 1. 가장 추천하는 방식 (Image 컴포넌트 활용)
