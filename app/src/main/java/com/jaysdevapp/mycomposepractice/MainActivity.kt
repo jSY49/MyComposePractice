@@ -115,25 +115,39 @@ fun MyFirstScreen(){
 @Composable
 fun ConstraintLayoutContent() {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        // 1. 요소들의 ID(레퍼런스) 생성
+
+        // 1. 고유 이름표
         val (button, text) = createRefs()
 
         // 2. 가이드라인 생성 (비율로 잡기 - XML의 Guideline)
         val topGuideline = createGuidelineFromTop(0.2f) // 위에서 20% 지점
+        val bottomGuideline = createGuidelineFromTop(0.5f) // 위에서 20% 지점
 
         Button(
             onClick = { /* 클릭 */ },
             modifier = Modifier.constrainAs(button) {
                 // 3. 제약 조건 걸기
-                top.linkTo(topGuideline)   // 가이드라인에 붙이기
-                start.linkTo(parent.start) // 부모 왼쪽에 붙이기
-                end.linkTo(parent.end)     // 부모 오른쪽에 붙이기
-
-                // XML의 layout_constraintHorizontal_bias와 동일
+                top.linkTo(topGuideline)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(bottomGuideline)
+                // horizontalBias : 치우침
                 horizontalBias = 0.5f
             }
         ) {
             Text("비율로 배치된 버튼")
+        }
+
+        Box (
+            modifier = Modifier.constrainAs(text){
+                top.linkTo(button.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(bottomGuideline)
+                linkTo(parent.start, parent.end, bias = 0.855f) // 가로축으로 85.5% 지점까지 이동
+            }.background(Color.Yellow)
+        ){
+            Text("비율로 배치된 박스 ")
         }
     }
 }
@@ -145,7 +159,6 @@ fun profileCard(){
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(10.dp)
             .background(Color.LightGray),
         verticalArrangement = Arrangement.Center,
@@ -186,7 +199,7 @@ fun profileCard(){
 fun GreetingPreview() {
     MyComposePracticeTheme {
 //        MyFirstScreen()
-//        ConstraintLayoutContent()
+        ConstraintLayoutContent()
         profileCard()
     }
 }
