@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,14 +29,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -60,11 +68,28 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     // innerPadding을 적용해줘야 상단바와 겹치지 않아
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        MyFirstScreen()
+                        //        MyFirstScreen()
+//                        ConstraintLayoutContent()
+//                        profileCard()
+//                        CounterState()
+                        InputName()
                     }
                 }
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    MyComposePracticeTheme {
+//        MyFirstScreen()
+//        ConstraintLayoutContent()
+//        profileCard()
+//        CounterState()
+        InputName()
     }
 }
 
@@ -194,12 +219,86 @@ fun profileCard(){
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    MyComposePracticeTheme {
-//        MyFirstScreen()
-        ConstraintLayoutContent()
-        profileCard()
+fun CounterState(){
+
+    /*
+    * 상태 선언 (기억하고 변할 수 있음)
+    * */
+    var count by remember { mutableStateOf(0) }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "클릭 횟수: $count",
+            style = MaterialTheme.typography.displaySmall
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        //클릭할 때 상태를 변경
+        Row {
+            Button(onClick = {
+                count++
+            }) {
+                Text("숫자 올리기")
+            }
+            Button(onClick = {
+                count=0
+            }) {
+                Text("reset")
+            }
+        }
+
+    }
+}
+
+@Composable
+fun InputName() {
+
+    val context = LocalContext.current
+    var name by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Text(
+            text = if(name.isEmpty()) "input your name." else "Hello $name!"
+            , style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.padding(20.dp))
+
+        TextField(
+            value = name,
+            onValueChange = { newText ->
+                name =newText
+            },
+            label = {Text("name")},
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            modifier = Modifier.fillMaxWidth().padding(10.dp)
+        )
+
+        Button(
+            onClick = {
+                if(name.isNotEmpty()){
+
+                    Toast.makeText(context,"입력하신 이름은 \"${name}\"입니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context,"이름을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        ) {
+            Text("Confirm")
+        }
     }
 }
