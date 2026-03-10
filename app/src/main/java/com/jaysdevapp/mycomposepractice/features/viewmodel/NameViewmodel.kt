@@ -12,6 +12,7 @@ class NameViewmodel(private val nameRepository: NameRepository = NameRepository(
     public val nameList = _nameList
 
     init{
+
         loadInitData()
     }
 

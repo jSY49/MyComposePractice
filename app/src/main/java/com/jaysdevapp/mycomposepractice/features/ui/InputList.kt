@@ -36,14 +36,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.jaysdevapp.mycomposepractice.features.viewmodel.NameViewmodel
+import com.jaysdevapp.mycomposepractice.features.viewmodel.UserViewmodel
 import com.jaysdevapp.mycomposepractice.navigation.Screen
 
 
 @Composable
 fun InputName(navController: NavHostController,
-              nameViewmodel: NameViewmodel = viewModel()) {
+              userViewmodel: UserViewmodel = viewModel()) {
 
     val context = LocalContext.current
+    val users = userViewmodel.userList
 
     var name by remember { mutableStateOf("") }
 //    val nameList = remember { mutableStateListOf<String>() }
@@ -79,7 +81,7 @@ fun InputName(navController: NavHostController,
         Button(
             onClick = {
                 if (name.isNotEmpty()) {
-                    nameViewmodel.addNameList(name)
+                    userViewmodel.addNameList(name)
                     name = "";
                 } else {
                     Toast.makeText(context, "이름을 입력해 주세요.", Toast.LENGTH_SHORT).show()
@@ -94,7 +96,7 @@ fun InputName(navController: NavHostController,
         ) {
 
             // items Or itemsIndexed
-            itemsIndexed(nameViewmodel.nameList) { index, item ->
+            itemsIndexed(users) { index, item ->
 
                 Card(
                     modifier = Modifier
@@ -102,7 +104,7 @@ fun InputName(navController: NavHostController,
                         .padding(3.dp)
                         .clickable {
 //                            navController.navigate("detail/${item}")
-                            navController.navigate(Screen.Detail.createRoute(item))
+                            navController.navigate(Screen.Detail.createRoute(item.name))
 
                         },
                     elevation = CardDefaults.cardElevation(4.dp)
@@ -114,12 +116,12 @@ fun InputName(navController: NavHostController,
                     ) {
 
                         Text(
-                            text = item,
+                            text = item.name,
                             modifier = Modifier.padding(16.dp).weight(1f)
                         )
 
                         IconButton(onClick = {
-                           nameViewmodel.removeName(index)
+                            userViewmodel.removeName(index)
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
