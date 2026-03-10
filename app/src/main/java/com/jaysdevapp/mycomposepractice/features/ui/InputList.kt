@@ -1,18 +1,13 @@
 package com.jaysdevapp.mycomposepractice.features.ui
 
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,24 +30,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.jaysdevapp.mycomposepractice.MainActivity.Companion.TAG
-import com.jaysdevapp.mycomposepractice.R
+import com.jaysdevapp.mycomposepractice.features.viewmodel.NameViewmodel
 import com.jaysdevapp.mycomposepractice.navigation.Screen
 
 
 @Composable
-fun InputName(navController: NavHostController) {
+fun InputName(navController: NavHostController,
+              nameViewmodel: NameViewmodel = viewModel()) {
 
     val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
 
-    val nameList = remember { mutableStateListOf<String>() }
+    var name by remember { mutableStateOf("") }
+//    val nameList = remember { mutableStateListOf<String>() }
 
     Column(
         modifier = Modifier
@@ -85,7 +79,7 @@ fun InputName(navController: NavHostController) {
         Button(
             onClick = {
                 if (name.isNotEmpty()) {
-                    nameList.add(name)
+                    nameViewmodel.addNameList(name)
                     name = "";
                 } else {
                     Toast.makeText(context, "이름을 입력해 주세요.", Toast.LENGTH_SHORT).show()
@@ -100,7 +94,7 @@ fun InputName(navController: NavHostController) {
         ) {
 
             // items Or itemsIndexed
-            itemsIndexed(nameList) { index, item ->
+            itemsIndexed(nameViewmodel.nameList) { index, item ->
 
                 Card(
                     modifier = Modifier
@@ -125,7 +119,7 @@ fun InputName(navController: NavHostController) {
                         )
 
                         IconButton(onClick = {
-                            nameList.removeAt(index = index)
+                           nameViewmodel.removeName(index)
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
